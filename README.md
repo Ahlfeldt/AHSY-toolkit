@@ -17,7 +17,7 @@ Upon publication of the Ahlfeldt, Heblich, Seidel, Fan (2026) paper, we will mak
 
 When using the toolkit in your work, please cite Ahlfeldt, Heblich, Seidel, Fan (2026): The price of productivity. Berlin School of Economics Discussion Paper. 
 
-This toolkit complements and buildings on the [AHS2023-toolkit](https://github.com/Ahlfeldt/AHS2023-toolkit) designed for residential property price and rent indices.
+This toolkit complements and builds on the [AHS2023-toolkit](https://github.com/Ahlfeldt/AHS2023-toolkit) designed for residential property price and rent indices.
 
 ## How to Use the Toolkit
 
@@ -35,3 +35,5 @@ Please consider the `README` files in the respective folders for further detail.
 ## Further resources:
 
 Ahlfeldt, G. M., Heblich, S., Seidel, T. (2023): Micro-geographic property price and rent indices. Regional Science and Urban Economics, 98. https://doi.org/10.1016/j.regsciurbeco.2022.103836
+
+Ahlfeldt, Heblich, Seidel, Fan (2026): The price of productivity. Berlin School of Economics Discussion Paper. [link](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf)
