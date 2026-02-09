@@ -7,9 +7,9 @@ Version 0.90, 2026
 
 ## General remarks
 
-This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Fan (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices for arbitrary spatial units based on transaction data. 
+This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Yin (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices for arbitrary spatial units based on transaction data. 
 
-At this point, it includes the indices created by Ahlfeldt, Heblich, Seidel, Fan (2026) for Germany. We keep updating these indices as time goes by. These micro-geographic property price indices are based on **real micro-data** from Scout24. They can be found in the following sub-folder: [APPLICATIONS/DATA/OUTPUT](https://github.com/Ahlfeldt/AHS2023-toolkit/tree/main/APPLICATIONS/DATA/OUTPUT). For replication, the underlying microdata must be accessed from the Forschungsdatenzentrum at RWI-Essen. 
+At this point, it includes the indices created by Ahlfeldt, Heblich, Seidel, Yin (2026) for Germany. We keep updating these indices as time goes by. These micro-geographic property price indices are based on **real micro-data** from Scout24. They can be found in the following sub-folder: [APPLICATIONS/DATA/OUTPUT](https://github.com/Ahlfeldt/AHS2023-toolkit/tree/main/APPLICATIONS/DATA/OUTPUT). For replication, the underlying microdata must be accessed from the Forschungsdatenzentrum at RWI-Essen. 
 
 We are working on an **interactive webtool** to illustrate the latest edition of the post-code level price and rent indices for Germany.
 
@@ -36,4 +36,4 @@ Please consider the `README` files in the respective folders for further detail.
 
 Ahlfeldt, G. M., Heblich, S., Seidel, T. (2023): Micro-geographic property price and rent indices. Regional Science and Urban Economics, 98. [link](https://doi.org/10.1016/j.regsciurbeco.2022.103836)
 
-Ahlfeldt, Heblich, Seidel, Fan (2026): The price of productivity. Berlin School of Economics Discussion Paper. [link](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf)
+Ahlfeldt, Heblich, Seidel, Yin (2026): The price of productivity. Berlin School of Economics Discussion Paper. [link](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf)
