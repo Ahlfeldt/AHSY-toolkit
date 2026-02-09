@@ -7,7 +7,7 @@ Version 0.90, 2026
 
 ## General remarks
 
-This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Fan (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices for arbitrary spatial units based on transaction data. 
+This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Yin (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices for arbitrary spatial units based on transaction data. 
 
 At this point, it includes the indices created by Ahlfeldt, Heblich, Seidel, Fan (2026) for Germany. We keep updating these indices as time goes by. These micro-geographic property price indices are based on **real micro-data** from Scout24. They can be found in the following sub-folder: [APPLICATIONS/DATA/OUTPUT](https://github.com/Ahlfeldt/AHS2023-toolkit/tree/main/APPLICATIONS/DATA/OUTPUT). For replication, the underlying microdata must be accessed from the Forschungsdatenzentrum at RWI-Essen. 
 
