@@ -15,7 +15,7 @@ We are working on an **interactive webtool** to illustrate the latest edition of
 
 Upon publication of the Ahlfeldt, Heblich, Seidel, Fan (2026) paper, we will make the algorithm and a synthetic trial data set available. 
 
-When using the toolkit in your work, please cite Ahlfeldt, Heblich, Seidel, Fan (2026): The price of productivity. Berlin School of Economics Discussion Paper. 
+When using the toolkit in your work, please cite Ahlfeldt, Heblich, Seidel, Fan (2026): The price of productivity. Berlin School of Economics Discussion Paper. **Please notice that this paper is pre-publication and such the methodology and the index may evolve.**
 
 This toolkit complements and builds on the [AHS2023-toolkit](https://github.com/Ahlfeldt/AHS2023-toolkit) designed for residential property price and rent indices based on the methodology developed by [Ahlfedt, Heblich, Seidel (2023)](https://doi.org/10.1016/j.regsciurbeco.2022.103836).
 
