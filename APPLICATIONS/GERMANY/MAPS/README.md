@@ -5,4 +5,8 @@ Toolkit for micro-geographic property commercial rent indices
 
 Version 0.90, 2026
 
-**©Please edit**
+## Folders
+
+| Directory | Description  
+| ------------- | ------ | 
+| `PLZ-2026` | Folder containing maps of postcode level commercial rent indices for all years between 2007 and 2024 in Germany. |
