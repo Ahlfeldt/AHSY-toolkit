@@ -5,136 +5,136 @@ Toolkit for micro-geographic commercial property rent indices
 Version 0.90, 2026
 
 ## General remarks
-This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Yin (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices using the RWI-GEO-REDC (v4) dataset. The underlying methodology uses locally weighted hedonic regressions to recover expected commercial rents for properties with average characteristics at a given location and year. The resulting indices provide a continuous spatial rent surface even in areas with sparse listing data. You must cite the paper when using the index.
+This toolkit covers the algorithm by [Ahlfeldt, Heblich, Seidel, Yin (2026)](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf) to generate micro-geographic commercial rent indices using the RWI-GEO-REDC (v4) dataset. The methodology relies on locally weighted hedonic regressions to recover expected rents for properties with average characteristics at a given location and year.
 
-The 2025 version datasets contain indices between 2007 and 2024 and are available in wide and long formats:
+You must cite the paper when using the index.
 
-`AHSY-Index-office-PLZ-2025` contains the index for office rents.
+The 2025 dataset contains indices between **2007 and 2024** and is available in **wide and long formats**.
 
-`AHSY-Index-retail-PLZ-2025` contains the index for retail rents. Notice that retail rents are even scarcer than office rents. In some years, the number of observations is too low to compute reliable index values, which is why they are missing. Even for the other years, we recommend that the values are used primarily for descriptive purposes.
+Datasets included:
 
-## Spatial unit
-The index is constructed for German five-digit postcode areas (PLZ). Each observation refers to a postcode centroid used as the target location of the local regression. In the underlying geography, postcode areas are smaller in dense urban locations and larger in more rural areas.
+- `AHSY-Index-office-PLZ-2025` – Office rent index  
+- `AHSY-Index-retail-PLZ-2025` – Retail rent index
 
-## Data formats
+Retail rents are substantially more sparse than office rents. In some years the number of observations is too low to compute reliable index values, which is why they are missing. Even for the other years, we recommend that the values are used primarily for descriptive purposes.
+
+---
+
+# Spatial unit
+
+The index is constructed for **German five-digit postcode regions (PLZ)**.  
+Each observation refers to the **postcode centroid**, which serves as the target location of the local regression.
+
+---
+
+# Data formats
 
 ### Long format
-In the long format, each row corresponds to a postcode-year observation.
 
-This format is suitable for:
-- panel analysis
-- time-series analysis
+Each row represents a **postcode–year observation**.
+
+Suitable for:
+
+- panel data analysis
 - econometric applications
+- time-series analysis
+
+---
 
 ### Wide format
-In the wide format, each row corresponds to one postcode, and yearly index values are stored in separate columns.
 
-This format is suitable for:
+Each row represents **one postcode**, with yearly index values stored in separate columns.
+
+Suitable for:
+
 - GIS applications
 - mapping
-- descriptive analysis
+- descriptive statistics
 
-## Variable description
+---
 
-### Identification variables
+# Variable description
 
-#### `postcode`
-Five-digit German postcode (PLZ) identifying the spatial unit for which the rent index is computed.
+## Identification variables
 
-#### `year`
-Calendar year of the index estimate. The 2025 dataset version covers the period from 2007 to 2024.
+| Variable | Description |
+|---|---|
+| `postcode` | Five-digit German postcode (PLZ) identifying the spatial unit for which the rent index is computed. |
+| `year` | Calendar year of the index estimate (2007–2024). |
+| `target_id` | Identifier of the spatial unit used as the target location of the local regression (postcode region). |
 
-#### `target_id`
-Identifier of the target spatial unit used in the estimation procedure. In the current version, this corresponds to the postcode region.
+---
 
-### Spatial variables
+## Spatial variables
 
-#### `target_x`
-Projected x-coordinate of the postcode centroid used as the target location in the local regression.
+| Variable | Description | Unit |
+|---|---|---|
+| `target_x` | X-coordinate of the postcode centroid used as the target location of the local regression. | meters |
+| `target_y` | Y-coordinate of the postcode centroid used as the target location of the local regression. | meters |
 
-Unit: meters.
+These coordinates allow users to merge the dataset with GIS layers and perform spatial analysis.
 
-#### `target_y`
-Projected y-coordinate of the postcode centroid used as the target location in the local regression.
+---
 
-Unit: meters.
+## Rent index variables
 
-These variables allow users to merge the dataset with spatial data and to conduct GIS-based analysis.
+| Variable | Description |
+|---|---|
+| `lprice_qm` | Predicted log rent per square meter for a commercial unit with average characteristics located at the postcode centroid. |
+| `lprice_qm_se` | Standard error of the predicted log rent per square meter. |
+| `price_qm` | Predicted rent per square meter (€ / m²) for a commercial unit with average characteristics located at the postcode centroid. This is the main index variable. |
+| `price_qm_se` | Standard error of the predicted rent per square meter. |
 
-### Rent index variables
+`price_qm` is obtained by exponentiating `lprice_qm` and applying a smearing correction to account for retransformation bias.
 
-#### `lprice_qm`
-Predicted log rent per square meter for a commercial unit with average characteristics located at the postcode centroid.
+---
 
-This is the primary regression output before retransformation into levels.
+## Estimation diagnostics
 
-#### `lprice_qm_se`
-Standard error of the predicted log rent per square meter.
-
-This variable measures the statistical uncertainty surrounding `lprice_qm`.
-
-#### `price_qm`
-Predicted rent per square meter in euros for a commercial unit with average characteristics located at the postcode centroid.
-
-This variable is obtained by exponentiating `lprice_qm` and applying a smearing correction to account for retransformation bias. It is the main index variable users will typically work with.
-
-#### `price_qm_se`
-Standard error of the predicted rent per square meter in levels.
-
-### Estimation diagnostics
-
-#### `Obs`
-Number of listing observations used in the local regression for the postcode-year estimate.
-
-Higher values indicate better local data support for the estimate.
-
-#### `Radius`
-Spatial radius required to collect the minimum number of observations used in the local regression.
-
-Unit: meters.
+| Variable | Description | Unit |
+|---|---|---|
+| `Obs` | Number of listing observations used in the local regression for the postcode-year estimate. | count |
+| `Radius` | Spatial radius required to collect the minimum number of observations used in the regression. | meters |
+| `Obs_own` | Number of observations located within the inner neighbourhood of the target location. | count |
+| `Radius_own` | Radius defining the inner neighbourhood used to capture local price conditions. | meters |
+| `Effect_nown` | Estimated coefficient capturing the price difference between observations in the immediate neighbourhood of the postcode and those outside that neighbourhood. | coefficient |
 
 Interpretation:
-- smaller values indicate denser local markets
-- larger values indicate sparser local markets
 
-#### `Obs_own`
-Number of observations located within the inner neighbourhood around the target location.
+- smaller `Radius` → denser market with many nearby listings  
+- larger `Radius` → thinner market requiring a wider spatial window
 
-This variable captures the local density of observations close to the postcode centroid.
+---
 
-#### `Radius_own`
-Radius defining the inner neighbourhood used to identify local price conditions.
+# Variables in the wide datasets
 
-Unit: meters.
+In the wide datasets, yearly values are stored as separate columns.
 
-#### `Effect_nown`
-Estimated coefficient capturing the price difference between observations in the immediate neighbourhood of the target postcode and those outside that neighbourhood.
-
-This term helps ensure that the predicted index reflects local market conditions even when the estimation draws on observations from a broader surrounding area.
-
-## Variables in the wide datasets
-
-In the wide datasets, yearly rent values are stored in separate columns.
-
-#### `price_qmYYYY`
-Predicted rent per square meter in year `YYYY`.
+| Variable pattern | Description |
+|---|---|
+| `price_qmYYYY` | Predicted rent per square meter in year YYYY. |
+| `price_qm_seYYYY` | Standard error of the predicted rent per square meter in year YYYY. |
 
 Example:
-- `price_qm2015`: predicted rent per square meter in 2015
 
-#### `price_qm_seYYYY`
-Standard error of the predicted rent per square meter in year `YYYY`.
+- `price_qm2015` – predicted rent per square meter in 2015  
+- `price_qm_se2015` – standard error of the predicted rent in 2015
 
-Example:
-- `price_qm_se2015`: standard error of the predicted rent per square meter in 2015
+---
 
-## Interpretation
-The index measures the expected commercial rent per square meter for a unit with average characteristics at a given postcode location and year. The construction controls for compositional differences in the underlying listings, including property characteristics such as floor area, age, and time on market. Changes in the index should therefore be interpreted as reflecting local rent dynamics rather than changes in the composition of listed properties.
+# Interpretation
 
-The estimation window is adaptive: in denser markets, estimates rely on more local information, while in thinner markets, the algorithm expands the radius to include a sufficient number of observations. Users should therefore consult the diagnostic variables such as `Obs`, `Radius`, `Obs_own`, and `Radius_own` when assessing estimate precision.
+The index measures the **expected commercial rent per square meter for a unit with average characteristics at a given postcode location and year**.
 
-## Suggested citation
-If you use this dataset, please cite:
+The estimation controls for compositional differences in listings (e.g. floor area, building age, and time on market). Changes in the index therefore reflect **local price dynamics rather than changes in property composition**.
+
+The estimation window adapts to local data density. In dense markets the algorithm relies on nearby observations, while in sparse markets the radius expands to include a sufficient number of listings.
+
+---
+
+# Suggested citation
+
+If you use this dataset please cite:
 
 Ahlfeldt, Gabriel M., Stephan Heblich, Tobias Seidel, and Fan Yin (2026).  
 *The Price of Productivity.*
