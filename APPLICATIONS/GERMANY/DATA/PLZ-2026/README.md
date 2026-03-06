@@ -53,7 +53,7 @@ Suitable for:
 
 ---
 
-# Variable description
+# Variable description in long format data sets
 
 ## Identification variables
 
@@ -136,5 +136,4 @@ The estimation window adapts to local data density. In dense markets the algorit
 
 If you use this dataset please cite:
 
-Ahlfeldt, Gabriel M., Stephan Heblich, Tobias Seidel, and Fan Yin (2026).  
-*The Price of Productivity.*
+Ahlfeldt, Gabriel M., Stephan Heblich, Tobias Seidel, and Fan Yin (2026). *The Price of Productivity.*
