@@ -138,4 +138,4 @@ Within the radius, **nearby observations receive a higher weight**. Weights expo
 
 If you use this dataset please cite:
 
-Ahlfeldt, Gabriel M., Stephan Heblich, Tobias Seidel, and Fan Yin (2026). *The Price of Productivity.* [https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf](Working paper).
+Ahlfeldt, Gabriel M., Stephan Heblich, Tobias Seidel, and Fan Yin (2026). *The Price of Productivity.* [Working paper](https://github.com/Ahlfeldt/DPs/blob/main/GA_SH_TS_FY_-_Productivity.pdf).
