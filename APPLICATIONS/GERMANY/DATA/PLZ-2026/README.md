@@ -80,9 +80,9 @@ These coordinates allow users to merge the dataset with GIS layers and perform s
 
 | Variable | Description |
 |---|---|
-| `lprice_qm` | Predicted log rent per square meter for a commercial unit with average characteristics located at the postcode centroid. |
+| `lprice_qm` | Predicted log rent per square meter for a commercial unit with average characteristics located in the postcode. |
 | `lprice_qm_se` | Standard error of the predicted log rent per square meter. |
-| `price_qm` | Predicted rent per square meter (€ / m²) for a commercial unit with average characteristics located at the postcode centroid. This is the main index variable. |
+| `price_qm` | Predicted rent per square meter (€ / m²) for a commercial unit with average characteristics located in the postcode. This is the main index variable. |
 | `price_qm_se` | Standard error of the predicted rent per square meter. |
 
 `price_qm` is obtained by exponentiating `lprice_qm` and applying a smearing correction to account for retransformation bias.
@@ -129,6 +129,8 @@ The index measures the **expected commercial rent per square meter for a unit wi
 The estimation controls for compositional differences in listings (e.g. floor area, building age, and time on market). Changes in the index therefore reflect **local price dynamics rather than changes in property composition**.
 
 The estimation window adapts to local data density. In dense markets the algorithm relies on nearby observations, while in sparse markets the radius expands to include a sufficient number of listings.
+
+Within the radius, **nearby observations receive a higher weight**. Weights exponentially decline in distance, reaching one percent of the weight at zero distance at the margin of the search radius.
 
 ---
 
