@@ -130,7 +130,7 @@ The estimation controls for compositional differences in listings (e.g. floor ar
 
 The estimation window adapts to local data density. In dense markets the algorithm relies on nearby observations, while in sparse markets the radius expands to include a sufficient number of listings.
 
-Within the radius, **nearby observations receive a higher weight**. Weights exponentially decline in distance, reaching one percent of the weight at zero distance at the margin of the search radius.
+Within the radius, **nearby observations receive a higher weight**. Weights exponentially decline in distance, reaching one percent of the weight at zero distance at the margin of the search radius. Local characteristics are captured by the neighbourhood fixed effect. Both features of the methodology ensure a local character of the prediction even if the search radius is large.
 
 ---
 
