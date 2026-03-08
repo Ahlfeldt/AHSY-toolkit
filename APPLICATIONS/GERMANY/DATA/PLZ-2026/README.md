@@ -27,6 +27,14 @@ Each observation refers to the **postcode centroid**, which serves as the target
 
 ---
 
+# Years
+
+The raw data processed by this toolkit covers all years from 2007 onwards. However, the number of observations is very limited for the following years: 2007, 2008, and 2019–2021.
+
+**Users should interpret the index values for these years with particular caution**, as the estimates rely on sparse underlying data.
+
+---
+
 # Data formats
 
 ### Long format
