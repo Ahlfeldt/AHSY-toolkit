@@ -25,4 +25,3 @@ We construct the rent indices for Germany at postcode level and also report the 
 
 Similar residential property price (rent and purchase) indices are available from the [AHS2023-toolkit](https://github.com/Ahlfeldt/AHS2023-toolkit/tree/main/APPLICATIONS/DATA/OUTPUT) based on the methodology developed by [Ahlfeldt, Heblich, Seidel (2023)](https://doi.org/10.1016/j.regsciurbeco.2022.103836). 
 
-https://github.com/Ahlfeldt/AHS2023-toolkit/tree/main/APPLICATIONS/DATA/OUTPUT
