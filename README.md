@@ -21,6 +21,8 @@ When using the toolkit in your work, please **cite Ahlfeldt, Heblich, Seidel, Yi
 
 This toolkit complements and extends the [AHS2023-toolkit](https://github.com/Ahlfeldt/AHS2023-toolkit), which continues to provide residential property price and rent indices based on the original methodology developed by [Ahlfeldt, Heblich, Seidel (2023)](https://doi.org/10.1016/j.regsciurbeco.2022.103836).
 
+Compared to the original AHS2023 methodology, the approach implemented here produces smoother indices that are generally less sensitive to influential outliers due to the use of weighted local catchment areas and adaptive radius selection. This can be particularly advantageous in thin markets where individual transactions may otherwise exert substantial influence on local estimates. At the same time, the resulting indices may be somewhat less responsive to highly localized market dynamics in areas with sparse transaction activity. In contrast, the original AHS2023 methodology, based on a parametric distance gradient, tends to generate more local variation and may capture localized market responses more sharply, though at the cost of greater sensitivity to influential observations.
+
 ## How to Use the Toolkit
 
 Please consider the `README` files in the respective folders for further detail.
