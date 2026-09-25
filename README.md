@@ -13,7 +13,9 @@ The toolkit includes applications to both **commercial** and **residential** pro
 
 Compared to the methodology introduced in [Ahlfeldt, Heblich, Seidel (2023)](https://doi.org/10.1016/j.regsciurbeco.2022.103836), this toolkit implements a modified approach to local prediction. Instead of relying on a parametric distance gradient, the algorithm uses weighted observations within locally determined catchment areas. Moreover, instead of selecting from a predefined set of radii, the algorithm identifies the smallest possible radius that satisfies a minimum observation threshold. This allows for a more flexible adaptation of the local estimation window to heterogeneous market densities. But it implies less control over the local windows by the user.
 
-We are working on an **interactive webtool** to illustrate the latest edition of the postcode-level price and rent indices for Germany.
+An **interactive webtool** for exploring the latest postcode-level price and rent
+indices for Germany is included in [`WEBTOOL`](WEBTOOL). It runs entirely in the
+browser with Pyodide and can be published as a static GitHub Pages site.
 
 Upon publication of the Ahlfeldt, Heblich, Seidel, Yin (2026) paper, we will make the algorithm and a synthetic trial dataset available.
 

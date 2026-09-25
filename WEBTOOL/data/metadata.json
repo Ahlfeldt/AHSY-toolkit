@@ -1,0 +1,38 @@
+{
+  "edition": "PLZ-2026",
+  "geography_count": 8255,
+  "products": {
+    "res_purchase": {
+      "label": "Residential purchase price",
+      "unit": "€ per m²",
+      "file": "data/res_purchase.csv.gz",
+      "first_year": 2007,
+      "last_year": 2025,
+      "observations": 156845
+    },
+    "res_rent": {
+      "label": "Residential rent",
+      "unit": "€ per m²/month",
+      "file": "data/res_rent.csv.gz",
+      "first_year": 2007,
+      "last_year": 2025,
+      "observations": 156845
+    },
+    "office_rent": {
+      "label": "Office rent",
+      "unit": "€ per m²/month",
+      "file": "data/office_rent.csv.gz",
+      "first_year": 2007,
+      "last_year": 2025,
+      "observations": 156845
+    },
+    "retail_rent": {
+      "label": "Retail rent",
+      "unit": "€ per m²/month",
+      "file": "data/retail_rent.csv.gz",
+      "first_year": 2009,
+      "last_year": 2025,
+      "observations": 115570
+    }
+  }
+}
