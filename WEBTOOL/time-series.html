@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="AHSY office, retail, and residential rent indices by German postcode.">
+  <title>AHSY rent indices by postcode</title>
+  <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #fff; color: #202124; font-family: Arial, sans-serif; }
+    body { padding: 14px 10px 20px; }
+    .tool { width: min(980px, 100%); margin: 0 auto; }
+    .input-container { margin-bottom: 10px; text-align: center; }
+    .input-group { margin-bottom: 10px; }
+    label { font-size: 16px; }
+    input, button { min-height: 34px; border: 1px solid #777; border-radius: 2px; font: 16px Arial, sans-serif; }
+    input { width: 150px; padding: 5px 8px; }
+    button { padding: 5px 18px; background: #fff; color: #202124; cursor: pointer; }
+    button:hover, button:focus-visible { background: #f3f3f3; }
+    button:disabled { color: #777; cursor: wait; }
+    .status { min-height: 20px; margin: 0 0 6px; text-align: center; color: #555; font-size: 14px; }
+    .status.error { color: #b3261e; font-weight: 700; }
+    .comparison { margin: 0 0 10px; text-align: center; font-size: 18px; font-weight: bold; }
+    .chart-section { margin: 0 0 18px; }
+    h2 { margin: 0; text-align: center; font-size: 18px; line-height: 1.35; }
+    .chart { width: 90%; height: 370px; margin: 0 auto; }
+    .citation { margin: 20px 0 0; color: #555; font-size: 14px; line-height: 1.45; }
+    @media (max-width: 600px) {
+      body { padding: 10px 4px 16px; }
+      .chart { width: 100%; height: 330px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="tool">
+    <form id="postcode-form" class="input-container">
+      <div class="input-group">
+        <label for="postcode1">Enter Postcode 1:</label>
+        <input id="postcode1" name="postcode1" inputmode="numeric" maxlength="5" value="10178" list="postcode-list" autocomplete="postal-code" aria-describedby="status">
+      </div>
+      <div class="input-group">
+        <label for="postcode2">Enter Postcode 2:</label>
+        <input id="postcode2" name="postcode2" inputmode="numeric" maxlength="5" value="80539" list="postcode-list" autocomplete="postal-code" aria-describedby="status">
+      </div>
+      <datalist id="postcode-list"></datalist>
+      <button id="compare" type="submit" disabled>Compare</button>
+    </form>
+    <p id="status" class="status" role="status" aria-live="polite">Loading postcode data…</p>
+    <p id="comparison" class="comparison">Comparing rent indices between postcodes <span id="postcode1-name">10178</span> and <span id="postcode2-name">80539</span>.</p>
+
+    <section class="chart-section" aria-labelledby="residential-title">
+      <h2 id="residential-title">Residential rent index</h2>
+      <div id="residential-chart" class="chart" role="img" aria-label="Residential rent index comparison for postcodes 10178 and 80539"></div>
+    </section>
+
+    <section class="chart-section" aria-labelledby="office-title">
+      <h2 id="office-title">Office rent index</h2>
+      <div id="office-chart" class="chart" role="img" aria-label="Office rent index comparison for postcodes 10178 and 80539"></div>
+    </section>
+
+    <section class="chart-section" aria-labelledby="retail-title">
+      <h2 id="retail-title">Retail rent index</h2>
+      <div id="retail-chart" class="chart" role="img" aria-label="Retail rent index comparison for postcodes 10178 and 80539"></div>
+    </section>
+
+    <p class="citation">Data and methodology: Ahlfeldt, Heblich, Seidel, and Yin (2026), <em>The Price of Productivity</em>. Please cite the research paper when using these indices.</p>
+  </main>
+
+  <script>
+    const DEFAULT_POSTCODES = ["10178", "80539"];
+    const DATA_ROOT = "https://raw.githubusercontent.com/Ahlfeldt/AHSY-toolkit/main/WEBTOOL/data/";
+    const SERIES = [
+      { key: "residential", file: "res_rent.csv.gz", chart: "residential-chart", title: "Residential rent index" },
+      { key: "office", file: "office_rent.csv.gz", chart: "office-chart", title: "Office rent index" },
+      { key: "retail", file: "retail_rent.csv.gz", chart: "retail-chart", title: "Retail rent index" }
+    ];
+    const dataBySeries = new Map();
+    let validPostcodes = new Set();
+
+    function parseNumber(value) {
+      if (value == null || value === "") return null;
+      const number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function parseCompactCsv(text) {
+      const rows = text.trim().split(/\r?\n/);
+      const headers = rows.shift().split(",");
+      const column = Object.fromEntries(headers.map((name, index) => [name, index]));
+      const byPostcode = new Map();
+
+      for (const line of rows) {
+        const fields = line.split(",");
+        const postcode = fields[column.postcode];
+        const row = {
+          year: Number(fields[column.year]),
+          value: parseNumber(fields[column.value]),
+          imputed: fields[column.imputed] === "True"
+        };
+        if (!byPostcode.has(postcode)) byPostcode.set(postcode, []);
+        byPostcode.get(postcode).push(row);
+      }
+      return byPostcode;
+    }
+
+    async function loadGzipCsv(file) {
+      const response = await fetch(DATA_ROOT + file, { cache: "no-cache" });
+      if (!response.ok || !response.body) throw new Error(`Could not load ${file}`);
+      const stream = response.body.pipeThrough(new DecompressionStream("gzip"));
+      return parseCompactCsv(await new Response(stream).text());
+    }
+
+    function niceTickStep(values) {
+      if (!values.length) return 1;
+      const range = Math.max(...values) - Math.min(...values);
+      const raw = range > 0 ? range / 8 : Math.max(Math.abs(values[0]) / 8, 1);
+      const magnitude = 10 ** Math.floor(Math.log10(raw));
+      const normalized = raw / magnitude;
+      const factor = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+      return factor * magnitude;
+    }
+
+    function chartLayout(values, compact) {
+      return {
+        autosize: true,
+        height: compact ? 330 : 370,
+        margin: compact ? { l: 58, r: 14, t: 12, b: 76 } : { l: 74, r: 24, t: 12, b: 82 },
+        paper_bgcolor: "#fff",
+        plot_bgcolor: "#fff",
+        font: { family: "Arial, sans-serif", size: compact ? 12 : 13, color: "#202124" },
+        showlegend: true,
+        hovermode: "x unified",
+        legend: { orientation: "h", x: 0.5, xanchor: "center", y: -0.22, yanchor: "top" },
+        xaxis: {
+          title: { text: "Year", standoff: 10 },
+          tickmode: "linear",
+          dtick: compact ? 4 : 2,
+          tickformat: "d",
+          showgrid: false,
+          zeroline: false,
+          fixedrange: true
+        },
+        yaxis: {
+          title: { text: "Rent per square metre (€)", standoff: 8 },
+          autorange: true,
+          tickmode: "linear",
+          dtick: niceTickStep(values),
+          tickformat: ".2~f",
+          gridcolor: "#dedede",
+          gridwidth: 1,
+          zeroline: false,
+          fixedrange: true
+        }
+      };
+    }
+
+    function makeTrace(series, postcode, index) {
+      const rows = dataBySeries.get(series.key).get(postcode) || [];
+      const observations = rows.filter((row) => Number.isFinite(row.year));
+      const color = index === 0 ? "cyan" : "magenta";
+      return {
+        x: observations.map((row) => row.year),
+        y: observations.map((row) => row.value),
+        customdata: observations.map((row) => row.imputed ? " (imputed)" : ""),
+        type: "scatter",
+        mode: "lines+markers",
+        name: postcode,
+        line: { color, width: 2.5, dash: index === 0 ? "solid" : "dash" },
+        marker: { color, size: 7 },
+        connectgaps: false,
+        hovertemplate: `${postcode}: €%{y:.2f} per m²%{customdata}<extra></extra>`
+      };
+    }
+
+    function renderChart(series, postcodes) {
+      const chart = document.getElementById(series.chart);
+      chart.setAttribute("aria-label", `${series.title} comparison for postcodes ${postcodes[0]} and ${postcodes[1]}`);
+      const traces = postcodes.map((postcode, index) => makeTrace(series, postcode, index));
+      const values = traces.flatMap((trace) => trace.y).filter(Number.isFinite);
+      return Plotly.react(chart, traces, chartLayout(values, window.innerWidth < 600), {
+        responsive: true,
+        displayModeBar: false,
+        scrollZoom: false
+      });
+    }
+
+    function normalizePostcode(value) {
+      return String(value).replace(/\D/g, "").padStart(5, "0").slice(-5);
+    }
+
+    async function comparePostcodes(rawPostcode1, rawPostcode2) {
+      const postcodes = [normalizePostcode(rawPostcode1), normalizePostcode(rawPostcode2)];
+      const status = document.getElementById("status");
+      const unavailable = postcodes.filter((postcode) => !validPostcodes.has(postcode));
+      if (unavailable.length) {
+        status.className = "status error";
+        status.textContent = "One or both of the entered postcodes are not available in all three datasets. Please try again.";
+        return;
+      }
+
+      document.getElementById("postcode1").value = postcodes[0];
+      document.getElementById("postcode2").value = postcodes[1];
+      document.getElementById("postcode1-name").textContent = postcodes[0];
+      document.getElementById("postcode2-name").textContent = postcodes[1];
+      status.className = "status";
+      status.textContent = "";
+      await Promise.all(SERIES.map((series) => renderChart(series, postcodes)));
+    }
+
+    async function boot() {
+      const status = document.getElementById("status");
+      try {
+        const datasets = await Promise.all(SERIES.map(async (series) => [series.key, await loadGzipCsv(series.file)]));
+        datasets.forEach(([key, data]) => dataBySeries.set(key, data));
+
+        const postcodeSets = SERIES.map((series) => new Set(dataBySeries.get(series.key).keys()));
+        validPostcodes = new Set([...postcodeSets[0]].filter((postcode) => postcodeSets.slice(1).every((set) => set.has(postcode))));
+        const options = document.createDocumentFragment();
+        [...validPostcodes].sort().forEach((postcode) => options.append(new Option(postcode)));
+        document.getElementById("postcode-list").append(options);
+
+        document.getElementById("compare").disabled = false;
+        await comparePostcodes(...DEFAULT_POSTCODES);
+      } catch (error) {
+        console.error(error);
+        status.className = "status error";
+        status.textContent = "The postcode data could not be loaded. Please refresh the page.";
+      }
+    }
+
+    for (const id of ["postcode1", "postcode2"]) {
+      document.getElementById(id).addEventListener("input", (event) => {
+        event.target.value = event.target.value.replace(/\D/g, "").slice(0, 5);
+      });
+    }
+    document.getElementById("postcode-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      comparePostcodes(document.getElementById("postcode1").value, document.getElementById("postcode2").value);
+    });
+    window.addEventListener("resize", () => {
+      const postcodes = [document.getElementById("postcode1").value, document.getElementById("postcode2").value];
+      if (postcodes.every((postcode) => validPostcodes.has(postcode))) SERIES.forEach((series) => renderChart(series, postcodes));
+    });
+    window.addEventListener("DOMContentLoaded", boot);
+  </script>
+</body>
+</html>
