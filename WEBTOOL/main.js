@@ -8,7 +8,7 @@ const state = {
   chart: null,
   product: "res_purchase",
   year: 2025,
-  selected: null,
+  selected: "10178",
   values: {},
 };
 
@@ -199,7 +199,6 @@ function updateSelectedYear(history) {
   $("selected-unit").textContent = row?.value == null ? `${productInfo().label}, ${state.year}` : `${unit} · ${state.year}`;
   $("fact-obs").textContent = row?.obs == null ? "—" : new Intl.NumberFormat("en-GB").format(row.obs);
   $("fact-radius").textContent = row?.radius == null ? "—" : `${formatValue(row.radius)} km`;
-  $("fact-estimate").textContent = row == null || row.value == null ? "Unavailable" : row.imputed ? "Imputed" : "Estimated";
 }
 
 function searchPostcode() {

@@ -54,7 +54,7 @@ h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 700; }
 .big-number { margin: 12px 0 0; color: var(--accent); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1; }
 .muted { color: var(--muted); line-height: 1.5; }
 .chart-wrap { position: relative; min-height: 270px; margin: 24px 0; }
-.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
 .facts div { padding-top: 12px; border-top: 2px solid var(--ink); }
 .facts dt { color: var(--muted); font-size: .69rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
 .facts dd { margin: 6px 0 0; font-size: .95rem; font-weight: 750; }
