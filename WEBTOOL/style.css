@@ -43,6 +43,11 @@ h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 700; }
 .postcode-shape { vector-effect: non-scaling-stroke; stroke: rgba(255,255,255,.5); stroke-width: .22; stroke-linejoin: round; transition: fill .12s ease; }
 .postcode-shape:hover { stroke: var(--ink); stroke-width: 1.1; }
 .postcode-shape.selected { stroke: #fff; stroke-width: 2; filter: drop-shadow(0 0 2px rgba(0,0,0,.6)); }
+.state-boundaries { pointer-events: none; }
+.state-boundaries path { fill: none; stroke: #111; stroke-width: .72; stroke-opacity: .8; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.city-labels { pointer-events: none; }
+.city-label circle { fill: #111; stroke: #fff; stroke-width: .7; vector-effect: non-scaling-stroke; }
+.city-label text { fill: #111; stroke: rgba(255,255,255,.92); stroke-width: 2.5px; paint-order: stroke fill; font-weight: 700; letter-spacing: .01em; }
 .legend { display: flex; align-items: center; gap: 0; margin-top: 4px; color: var(--muted); font-size: .72rem; }
 .legend-title { margin-right: 10px; font-weight: 700; }
 .legend-swatch { width: 44px; height: 9px; }

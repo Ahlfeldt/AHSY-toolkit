@@ -3,6 +3,7 @@ const state = {
   pyodide: null,
   api: null,
   geography: null,
+  federalStates: null,
   paths: null,
   projection: null,
   chart: null,
@@ -11,6 +12,24 @@ const state = {
   selected: "10178",
   values: {},
 };
+
+const largestCities = [
+  { name: "Berlin", lon: 13.4050, lat: 52.5200 },
+  { name: "Hamburg", lon: 9.9937, lat: 53.5511 },
+  { name: "Munich", lon: 11.5820, lat: 48.1351 },
+  { name: "Cologne", lon: 6.9603, lat: 50.9375, anchor: "end", dx: -6, dy: 19 },
+  { name: "Frankfurt", lon: 8.6821, lat: 50.1109 },
+  { name: "Stuttgart", lon: 9.1829, lat: 48.7758 },
+  { name: "Düsseldorf", lon: 6.7735, lat: 51.2277, anchor: "end", dx: -6, dy: -10 },
+  { name: "Leipzig", lon: 12.3731, lat: 51.3397 },
+  { name: "Dortmund", lon: 7.4653, lat: 51.5136, dx: 6, dy: -8 },
+  { name: "Essen", lon: 7.0123, lat: 51.4556, dx: 6, dy: 5 },
+  { name: "Bremen", lon: 8.8017, lat: 53.0793 },
+  { name: "Dresden", lon: 13.7373, lat: 51.0504 },
+  { name: "Hanover", lon: 9.7320, lat: 52.3759 },
+  { name: "Nuremberg", lon: 11.0767, lat: 49.4521 },
+  { name: "Duisburg", lon: 6.7623, lat: 51.4344, anchor: "end", dx: -6, dy: 12 },
+];
 
 const colors = ["#f3f0e9", "#e3dccd", "#cfc1a7", "#b49f7c", "#917956", "#65523a"];
 const $ = (id) => document.getElementById(id);
@@ -43,6 +62,10 @@ async function boot() {
     const base = new URL(".", window.location.href);
     state.metadata = await fetch(new URL("data/metadata.json", base)).then((r) => r.json());
     state.geography = await fetchGzipJson(new URL("data/postcodes.geojson.gz", base));
+    state.federalStates = await fetch(new URL("data/federal_states.geojson", base)).then((r) => {
+      if (!r.ok) throw new Error("Could not fetch federal-state boundaries");
+      return r.json();
+    });
 
     state.pyodide = await loadPyodide();
     const python = await fetch(new URL("app.py", base)).then((r) => r.text());
@@ -93,7 +116,32 @@ function buildMap() {
     .on("pointerleave", () => $("tooltip").hidden = true)
     .on("click", (_, d) => selectPostcode(d.properties.postcode));
 
-  const zoom = d3.zoom().scaleExtent([1, 14]).on("zoom", (event) => layer.attr("transform", event.transform));
+  layer.append("g")
+    .attr("class", "state-boundaries")
+    .selectAll("path")
+    .data(state.federalStates.features)
+    .join("path")
+    .attr("d", path);
+
+  const cityLayer = layer.append("g").attr("class", "city-labels");
+  const cities = cityLayer.selectAll("g")
+    .data(largestCities)
+    .join("g")
+    .attr("class", "city-label")
+    .attr("transform", (d) => `translate(${state.projection([d.lon, d.lat]).join(",")})`);
+  cities.append("circle").attr("r", 1.8);
+  cities.append("text")
+    .attr("x", (d) => d.dx ?? 4)
+    .attr("y", (d) => d.dy ?? -4)
+    .attr("text-anchor", (d) => d.anchor ?? "start")
+    .style("font-size", "8.5px")
+    .text((d) => d.name);
+
+  const zoom = d3.zoom().scaleExtent([1, 14]).on("zoom", (event) => {
+    layer.attr("transform", event.transform);
+    cityLayer.selectAll("text").style("font-size", `${8.5 / event.transform.k}px`);
+    cityLayer.selectAll("circle").attr("r", 1.8 / event.transform.k);
+  });
   svg.call(zoom);
   state.resetZoom = () => svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity);
 }

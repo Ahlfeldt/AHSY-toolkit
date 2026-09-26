@@ -34,3 +34,6 @@ push to `main`. In Google Sites, choose
 **Insert → Embed → By URL** and paste the GitHub Pages URL. A height of roughly
 900–1,100 pixels works well on desktop; the viewer rearranges itself on narrow
 screens.
+
+Federal-state outlines use the low-resolution GeoJSON from
+`isellsoap/deutschlandGeoJSON` (`2_bundeslaender/4_niedrig.geo.json`).
