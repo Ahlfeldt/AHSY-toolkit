@@ -37,3 +37,5 @@ screens.
 
 Federal-state outlines use the low-resolution GeoJSON from
 `isellsoap/deutschlandGeoJSON` (`2_bundeslaender/4_niedrig.geo.json`).
+The grayscale context layer uses standard OpenStreetMap raster tiles and keeps
+the required contributor attribution visible inside the map.

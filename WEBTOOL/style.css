@@ -17,7 +17,7 @@ button, input, select { font: inherit; }
 .app-shell { max-width: 1500px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 64px) 28px; }
 .kicker { margin: 0 0 8px; color: var(--accent); font-size: .73rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 
-.toolbar { display: grid; grid-template-columns: minmax(210px, 1fr) minmax(260px, 1.5fr) minmax(220px, 1fr) minmax(190px, .8fr); gap: 18px; align-items: end; padding: 20px; background: var(--soft); color: var(--ink); border: 1px solid var(--line); border-bottom: 0; }
+.toolbar { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(220px, 1.35fr) minmax(190px, 1fr) minmax(170px, .8fr) minmax(150px, .7fr); gap: 18px; align-items: end; padding: 20px; background: var(--soft); color: var(--ink); border: 1px solid var(--line); border-bottom: 0; }
 label > span { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: .76rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 select, input[type="text"], input[inputmode="numeric"] { width: 100%; min-height: 43px; border: 1px solid #c9c5bd; border-radius: 2px; background: white; color: var(--ink); padding: 9px 11px; outline: none; }
 select option { color: var(--ink); }
@@ -40,6 +40,11 @@ h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 700; }
 #map { position: relative; width: 100%; height: clamp(510px, 63vh, 760px); margin-top: 10px; overflow: hidden; cursor: grab; }
 #map:active { cursor: grabbing; }
 #map svg { width: 100%; height: 100%; display: block; }
+.map-tiles { pointer-events: none; }
+.map-tiles image { filter: grayscale(1) contrast(.9) brightness(1.08); }
+.postcode-layer { transition: opacity .12s ease; }
+.map-attribution { position: absolute; right: 4px; bottom: 3px; z-index: 2; padding: 2px 4px; background: rgba(255,255,255,.82); color: #555; font-size: 9px; line-height: 1.2; }
+.map-attribution a { color: inherit; }
 .postcode-shape { vector-effect: non-scaling-stroke; stroke: rgba(255,255,255,.5); stroke-width: .22; stroke-linejoin: round; transition: fill .12s ease; }
 .postcode-shape:hover { stroke: var(--ink); stroke-width: 1.1; }
 .postcode-shape.selected { stroke: #fff; stroke-width: 2; filter: drop-shadow(0 0 2px rgba(0,0,0,.6)); }

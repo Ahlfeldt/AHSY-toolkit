@@ -5,6 +5,7 @@ const state = {
   geography: null,
   federalStates: null,
   paths: null,
+  postcodeLayer: null,
   projection: null,
   chart: null,
   product: "res_purchase",
@@ -94,7 +95,7 @@ function buildControls() {
     select.add(new Option(item.label, key));
   }
   select.value = state.product;
-  for (const id of ["product", "year", "postcode", "search", "reset-map"]) $(id).disabled = false;
+  for (const id of ["product", "year", "postcode", "search", "map-opacity", "reset-map"]) $(id).disabled = false;
 }
 
 function buildMap() {
@@ -102,10 +103,12 @@ function buildMap() {
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
   const svg = container.append("svg").attr("viewBox", [0, 0, width, height]);
+  const tileLayer = svg.append("g").attr("class", "map-tiles");
   const layer = svg.append("g");
   state.projection = d3.geoMercator().fitExtent([[18, 16], [width - 18, height - 16]], state.geography);
   const path = d3.geoPath(state.projection);
-  state.paths = layer.selectAll("path")
+  state.postcodeLayer = layer.append("g").attr("class", "postcode-layer").style("opacity", .82);
+  state.paths = state.postcodeLayer.selectAll("path")
     .data(state.geography.features)
     .join("path")
     .attr("class", "postcode-shape")
@@ -137,7 +140,24 @@ function buildMap() {
     .style("font-size", "8.5px")
     .text((d) => d.name);
 
+  const tiler = d3.tile().extent([[0, 0], [width, height]]);
+  function renderTiles(transform) {
+    const tiles = tiler
+      .scale(state.projection.scale() * 2 * Math.PI * transform.k)
+      .translate(transform.apply(state.projection.translate()))();
+    tileLayer.selectAll("image")
+      .data(tiles, (d) => d.join("/"))
+      .join("image")
+      .attr("x", (d) => (d[0] + tiles.translate[0]) * tiles.scale)
+      .attr("y", (d) => (d[1] + tiles.translate[1]) * tiles.scale)
+      .attr("width", tiles.scale + .5)
+      .attr("height", tiles.scale + .5)
+      .attr("href", (d) => `https://tile.openstreetmap.org/${d[2]}/${d[0]}/${d[1]}.png`);
+  }
+  renderTiles(d3.zoomIdentity);
+
   const zoom = d3.zoom().scaleExtent([1, 14]).on("zoom", (event) => {
+    renderTiles(event.transform);
     layer.attr("transform", event.transform);
     cityLayer.selectAll("text").style("font-size", `${8.5 / event.transform.k}px`);
     cityLayer.selectAll("circle").attr("r", 1.8 / event.transform.k);
@@ -175,6 +195,11 @@ function bindEvents() {
   $("search").addEventListener("click", searchPostcode);
   $("postcode").addEventListener("keydown", (event) => { if (event.key === "Enter") searchPostcode(); });
   $("postcode").addEventListener("input", (event) => { event.target.value = event.target.value.replace(/\D/g, "").slice(0, 5); });
+  $("map-opacity").addEventListener("input", (event) => {
+    const opacity = Number(event.target.value);
+    $("opacity-label").textContent = `${opacity}%`;
+    state.postcodeLayer.style("opacity", opacity / 100);
+  });
   $("reset-map").addEventListener("click", state.resetZoom);
 }
 

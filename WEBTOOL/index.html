@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/d3-tile@1/dist/d3-tile.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
   <script defer src="main.js"></script>
@@ -33,6 +34,10 @@
           <button id="search" type="button" disabled>Show</button>
         </div>
       </label>
+      <label class="opacity-control">
+        <span>Index opacity <strong id="opacity-label">82%</strong></span>
+        <input id="map-opacity" type="range" min="0" max="100" value="82" step="1" disabled>
+      </label>
       <div class="status" id="status" role="status"><span class="spinner"></span> Loading the atlas…</div>
     </section>
 
@@ -45,7 +50,9 @@
           </div>
           <button id="reset-map" class="quiet-button" type="button" disabled>Reset map</button>
         </div>
-        <div id="map" aria-label="Interactive postcode map of Germany"></div>
+        <div id="map" aria-label="Interactive postcode map of Germany">
+          <div class="map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>
+        </div>
         <div id="legend" class="legend" aria-label="Map legend"></div>
         <div id="tooltip" class="tooltip" hidden></div>
       </article>
