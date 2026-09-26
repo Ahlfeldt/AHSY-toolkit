@@ -11,8 +11,8 @@
     html, body { margin: 0; padding: 0; background: #fff; color: #202124; font-family: Arial, sans-serif; }
     body { padding: 14px 10px 20px; }
     .tool { width: min(980px, 100%); margin: 0 auto; }
-    .input-container { margin-bottom: 10px; text-align: center; }
-    .input-group { margin-bottom: 10px; }
+    .input-container { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 10px; text-align: center; }
+    .input-group { display: flex; align-items: center; gap: 7px; margin: 0; }
     label { font-size: 16px; }
     input, button { min-height: 34px; border: 1px solid #777; border-radius: 2px; font: 16px Arial, sans-serif; }
     input { width: 150px; padding: 5px 8px; }
@@ -28,6 +28,7 @@
     .citation { margin: 20px 0 0; color: #555; font-size: 14px; line-height: 1.45; }
     @media (max-width: 600px) {
       body { padding: 10px 4px 16px; }
+      .input-container { flex-direction: column; gap: 8px; }
       .chart { width: 100%; height: 300px; }
     }
   </style>
