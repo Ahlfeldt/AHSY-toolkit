@@ -23,6 +23,33 @@ ROOT = Path(__file__).resolve().parents[1]
 WEBTOOL = ROOT / "WEBTOOL"
 OUTPUT = WEBTOOL / "data"
 SOURCE = ROOT / "APPLICATIONS" / "GERMANY" / "DATA" / "PLZ-2026"
+MUNICIPALITIES = (
+    ROOT
+    / "APPLICATIONS"
+    / "GERMANY"
+    / "SHAPES"
+    / "MUNICIPALITY_shp"
+    / "vg250_gem_clean.shp"
+)
+
+STATE_NAMES = {
+    "01": "Schleswig-Holstein",
+    "02": "Hamburg",
+    "03": "Lower Saxony",
+    "04": "Bremen",
+    "05": "North Rhine-Westphalia",
+    "06": "Hesse",
+    "07": "Rhineland-Palatinate",
+    "08": "Baden-Württemberg",
+    "09": "Bavaria",
+    "10": "Saarland",
+    "11": "Berlin",
+    "12": "Brandenburg",
+    "13": "Mecklenburg-Vorpommern",
+    "14": "Saxony",
+    "15": "Saxony-Anhalt",
+    "16": "Thuringia",
+}
 
 PRODUCTS = {
     "res_purchase": {
@@ -84,6 +111,24 @@ def build_geometry() -> None:
         obsolete.unlink()
 
 
+def build_state_boundaries() -> None:
+    """Build accurate state outlines from the repository's municipality shapes."""
+    frame = gpd.read_file(MUNICIPALITIES)[["SN_L", "geometry"]]
+    frame = frame.dissolve(by="SN_L", as_index=False)
+    # Work in the source's metre-based CRS. This is detailed enough for the
+    # viewer's maximum zoom while avoiding a multi-megabyte browser payload.
+    frame["geometry"] = frame.geometry.simplify(25, preserve_topology=True)
+    frame["name"] = frame["SN_L"].map(STATE_NAMES)
+    frame = frame.rename(columns={"SN_L": "state"}).to_crs(4326)
+    frame["geometry"] = shapely.set_precision(frame.geometry.array, grid_size=0.00001)
+    destination = OUTPUT / "federal_states.geojson.gz"
+    with gzip.open(destination, "wt", encoding="utf-8") as stream:
+        stream.write(frame.to_json(drop_id=True, separators=(",", ":")))
+    obsolete = OUTPUT / "federal_states.geojson"
+    if obsolete.exists():
+        obsolete.unlink()
+
+
 def build_product(key: str, config: dict[str, object]) -> dict[str, object]:
     source = Path(config["file"])
     columns = [
@@ -121,6 +166,7 @@ def build_product(key: str, config: dict[str, object]) -> dict[str, object]:
 def main() -> None:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     build_geometry()
+    build_state_boundaries()
     metadata = {key: build_product(key, config) for key, config in PRODUCTS.items()}
     payload = {
         "edition": "PLZ-2026",

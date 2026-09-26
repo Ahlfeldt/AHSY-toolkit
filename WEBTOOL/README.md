@@ -35,7 +35,8 @@ push to `main`. In Google Sites, choose
 900–1,100 pixels works well on desktop; the viewer rearranges itself on narrow
 screens.
 
-Federal-state outlines use the low-resolution GeoJSON from
-`isellsoap/deutschlandGeoJSON` (`2_bundeslaender/4_niedrig.geo.json`).
+Federal-state outlines are dissolved by `SN_L` from the repository's
+`APPLICATIONS/GERMANY/SHAPES/MUNICIPALITY_shp/vg250_gem_clean.shp`, simplified
+at a 25-metre tolerance, and delivered as compressed GeoJSON.
 The grayscale context layer uses standard OpenStreetMap raster tiles and keeps
 the required contributor attribution visible inside the map.

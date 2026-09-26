@@ -63,10 +63,7 @@ async function boot() {
     const base = new URL(".", window.location.href);
     state.metadata = await fetch(new URL("data/metadata.json", base)).then((r) => r.json());
     state.geography = await fetchGzipJson(new URL("data/postcodes.geojson.gz", base));
-    state.federalStates = await fetch(new URL("data/federal_states.geojson", base)).then((r) => {
-      if (!r.ok) throw new Error("Could not fetch federal-state boundaries");
-      return r.json();
-    });
+    state.federalStates = await fetchGzipJson(new URL("data/federal_states.geojson.gz", base));
 
     state.pyodide = await loadPyodide();
     const python = await fetch(new URL("app.py", base)).then((r) => r.text());
