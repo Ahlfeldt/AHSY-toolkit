@@ -24,11 +24,11 @@
     .comparison { margin: 0 0 10px; text-align: center; font-size: 18px; font-weight: bold; }
     .chart-section { margin: 0 0 18px; }
     h2 { margin: 0; text-align: center; font-size: 18px; line-height: 1.35; }
-    .chart { width: 90%; height: 340px; margin: 0 auto; }
+    .chart { width: 90%; height: 310px; margin: 0 auto; }
     .citation { margin: 20px 0 0; color: #555; font-size: 14px; line-height: 1.45; }
     @media (max-width: 600px) {
       body { padding: 10px 4px 16px; }
-      .chart { width: 100%; height: 330px; }
+      .chart { width: 100%; height: 300px; }
     }
   </style>
 </head>
@@ -124,7 +124,7 @@
     function chartLayout(values, compact) {
       return {
         autosize: true,
-        height: compact ? 330 : 340,
+        height: compact ? 300 : 310,
         margin: compact ? { l: 58, r: 14, t: 12, b: 76 } : { l: 74, r: 24, t: 12, b: 82 },
         paper_bgcolor: "#fff",
         plot_bgcolor: "#fff",
