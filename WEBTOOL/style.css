@@ -52,7 +52,8 @@ h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 700; }
 .state-boundaries path { fill: none; stroke: #111; stroke-width: .72; stroke-opacity: .8; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .city-labels { pointer-events: none; }
 .city-label circle { fill: #111; stroke: #fff; stroke-width: .7; vector-effect: non-scaling-stroke; }
-.city-label text { fill: #111; stroke: rgba(255,255,255,.92); stroke-width: 2.5px; paint-order: stroke fill; font-weight: 700; letter-spacing: .01em; }
+.city-label text { fill: #111; stroke: none; dominant-baseline: central; font-weight: 700; letter-spacing: .01em; transition: opacity .12s ease; }
+.city-label text.label-hidden { opacity: 0; }
 .legend { display: flex; align-items: center; gap: 0; margin-top: 4px; color: var(--muted); font-size: .72rem; }
 .legend-title { margin-right: 10px; font-weight: 700; }
 .legend-swatch { width: 44px; height: 9px; }

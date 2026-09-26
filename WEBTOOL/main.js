@@ -18,18 +18,18 @@ const largestCities = [
   { name: "Berlin", lon: 13.4050, lat: 52.5200 },
   { name: "Hamburg", lon: 9.9937, lat: 53.5511 },
   { name: "Munich", lon: 11.5820, lat: 48.1351 },
-  { name: "Cologne", lon: 6.9603, lat: 50.9375, anchor: "end", dx: -6, dy: 19 },
+  { name: "Cologne", lon: 6.9603, lat: 50.9375, anchor: "end" },
   { name: "Frankfurt", lon: 8.6821, lat: 50.1109 },
   { name: "Stuttgart", lon: 9.1829, lat: 48.7758 },
-  { name: "Düsseldorf", lon: 6.7735, lat: 51.2277, anchor: "end", dx: -6, dy: -10 },
+  { name: "Düsseldorf", lon: 6.7735, lat: 51.2277, anchor: "end" },
   { name: "Leipzig", lon: 12.3731, lat: 51.3397 },
-  { name: "Dortmund", lon: 7.4653, lat: 51.5136, dx: 6, dy: -8 },
-  { name: "Essen", lon: 7.0123, lat: 51.4556, dx: 6, dy: 5 },
+  { name: "Dortmund", lon: 7.4653, lat: 51.5136 },
+  { name: "Essen", lon: 7.0123, lat: 51.4556 },
   { name: "Bremen", lon: 8.8017, lat: 53.0793 },
   { name: "Dresden", lon: 13.7373, lat: 51.0504 },
   { name: "Hanover", lon: 9.7320, lat: 52.3759 },
   { name: "Nuremberg", lon: 11.0767, lat: 49.4521 },
-  { name: "Duisburg", lon: 6.7623, lat: 51.4344, anchor: "end", dx: -6, dy: 12 },
+  { name: "Duisburg", lon: 6.7623, lat: 51.4344, anchor: "end" },
 ];
 
 const colors = ["#f3f0e9", "#e3dccd", "#cfc1a7", "#b49f7c", "#917956", "#65523a"];
@@ -134,11 +134,47 @@ function buildMap() {
     .attr("transform", (d) => `translate(${state.projection([d.lon, d.lat]).join(",")})`);
   cities.append("circle").attr("r", 1.8);
   cities.append("text")
-    .attr("x", (d) => d.dx ?? 4)
-    .attr("y", (d) => d.dy ?? -4)
     .attr("text-anchor", (d) => d.anchor ?? "start")
-    .style("font-size", "8.5px")
     .text((d) => d.name);
+
+  // Keep labels a fixed screen distance from their markers. Place them in
+  // population order and hide lower-priority labels when their boxes collide;
+  // zooming increases the space between cities, so those labels return.
+  function updateCityLabels(transform) {
+    const fontSize = 9.5;
+    const markerGap = 4.5;
+    const labelHeight = 12;
+    const padding = 2;
+    const occupied = [];
+
+    cities.each(function(d) {
+      const group = d3.select(this);
+      const [mapX, mapY] = state.projection([d.lon, d.lat]);
+      const [screenX, screenY] = transform.apply([mapX, mapY]);
+      const width = d.name.length * fontSize * .56;
+      const isLeft = d.anchor === "end";
+      const left = isLeft ? screenX - markerGap - width : screenX + markerGap;
+      const box = {
+        left: left - padding,
+        right: left + width + padding,
+        top: screenY - labelHeight / 2 - padding,
+        bottom: screenY + labelHeight / 2 + padding,
+      };
+      const overlaps = occupied.some((other) => !(
+        box.right < other.left || box.left > other.right ||
+        box.bottom < other.top || box.top > other.bottom
+      ));
+
+      group.select("text").classed("label-hidden", overlaps);
+      if (!overlaps) occupied.push(box);
+      group.select("text")
+        .attr("x", (isLeft ? -markerGap : markerGap) / transform.k)
+        .attr("y", 0)
+        .style("font-size", `${fontSize / transform.k}px`);
+      group.select("circle").attr("r", 1.8 / transform.k);
+    });
+  }
+  updateCityLabels(d3.zoomIdentity);
 
   const tiler = d3.tile().extent([[0, 0], [width, height]]);
   function renderTiles(transform) {
@@ -156,11 +192,10 @@ function buildMap() {
   }
   renderTiles(d3.zoomIdentity);
 
-  const zoom = d3.zoom().scaleExtent([1, 14]).on("zoom", (event) => {
+  const zoom = d3.zoom().scaleExtent([1, 28]).on("zoom", (event) => {
     renderTiles(event.transform);
     layer.attr("transform", event.transform);
-    cityLayer.selectAll("text").style("font-size", `${8.5 / event.transform.k}px`);
-    cityLayer.selectAll("circle").attr("r", 1.8 / event.transform.k);
+    updateCityLabels(event.transform);
   });
   svg.call(zoom);
   state.resetZoom = () => svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity);
