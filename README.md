@@ -25,6 +25,10 @@ This toolkit complements and extends the [AHS2023-toolkit](https://github.com/Ah
 
 Compared to the original AHS2023 methodology, the approach implemented here produces smoother indices that are generally less sensitive to influential outliers due to the use of weighted local catchment areas and adaptive radius selection. This can be particularly advantageous in thin markets where individual transactions may otherwise exert substantial influence on local estimates. At the same time, the resulting indices may be somewhat less responsive to highly localized market dynamics in areas with sparse transaction activity. In contrast, the original AHS2023 methodology, based on a parametric distance gradient, tends to generate more local variation and may capture localized market responses more sharply, though at the cost of greater sensitivity to influential observations.
 
+### Spatial interpretation
+
+Every AHSY estimate refers to the target coordinate supplied to the local regression. For municipality-level products, this coordinate is the **municipality centroid**. The estimate should therefore be interpreted as the predicted price or rent at that centroid, not automatically as an area-wide municipal average. This distinction can be important for geographically large or internally heterogeneous municipalities. Users interested in within-municipality variation—or in constructing municipality averages from finer spatial estimates—should generally use the postcode (`PLZ`) indices and apply an aggregation scheme appropriate to their application.
+
 ## How to Use the Toolkit
 
 Please consider the `README` files in the respective folders for further detail.
